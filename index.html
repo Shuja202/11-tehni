@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>11 Tehni</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="game">
+    <aside class="controls">
+      <button type="button" id="mode-toggle" class="mode-toggle" aria-pressed="false">
+        <span class="mode-label">2 Players</span>
+      </button>
+      <p class="games-played">Games played: <span id="games-count">0</span></p>
+    </aside>
+
+    <section class="board-wrap" aria-label="11 Tehni board">
+      <svg id="board" viewBox="0 0 800 560" role="img" aria-labelledby="board-title">
+        <title id="board-title">11 Tehni game board</title>
+        <g id="board-lines"></g>
+        <g id="board-nodes"></g>
+        <g id="board-pieces"></g>
+      </svg>
+    </section>
+
+    <footer class="status">
+      <p id="status-text">Place your pieces — Player 1's turn</p>
+      <p id="phase-text" class="phase-text">Placement: 0 / 22</p>
+    </footer>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
