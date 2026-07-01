@@ -82,6 +82,31 @@ body {
   font-size: 0.82rem;
   color: var(--text-muted);
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.copy-count-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s;
+  line-height: 1;
+}
+
+.copy-count-btn:hover {
+  opacity: 1;
+}
+
+.copy-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  display: block;
 }
 
 #games-count {
