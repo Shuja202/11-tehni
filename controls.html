@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Audio Controls</title>
+    <link rel="stylesheet" href="controls.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎮 Game Audio Controls</h1>
+
+      <div class="control-section">
+        <div class="control-label">
+          <span>🎵 Music Volume</span>
+          <div class="volume-value"><span id="musicValue">70</span>%</div>
+        </div>
+        <input type="range" id="musicVolume" min="0" max="100" value="70" />
+      </div>
+
+      <div class="control-section">
+        <div class="control-label">
+          <span>🔊 Interaction Sounds</span>
+          <div class="volume-value"><span id="sfxValue">80</span>%</div>
+        </div>
+        <input type="range" id="sfxVolume" min="0" max="100" value="80" />
+      </div>
+
+      <div class="button-group">
+        <button class="btn-test" onclick="playMusicTest()">
+          🎵 Test Music
+        </button>
+        <button class="btn-test" onclick="playSFXTest()">🔘 Test SFX</button>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-mute" onclick="muteAll()">🔇 Mute All</button>
+        <button class="btn-unmute" onclick="unmuteAll()">🔊 Unmute All</button>
+      </div>
+
+      <div class="status-text" id="status">Ready to adjust audio settings</div>
+    </div>
+
+    <script src="controls.js"></script>
+  </body>
+</html>
