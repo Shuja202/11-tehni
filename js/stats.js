@@ -16,7 +16,7 @@ const firebaseConfig = {
   storageBucket: 'tehni-d2eac.firebasestorage.app',
   messagingSenderId: '728762115452',
   appId: '1:728762115452:web:7c44a365cec227974af0f9',
-};
+};                                                      
 
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
