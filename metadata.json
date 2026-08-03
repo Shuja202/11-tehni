@@ -1,0 +1,6 @@
+{
+  "name": "11 Tehni",
+  "description": "An 11 Tehni (11 Men's Morris / Eleven Men's Morris) traditional board game in HTML, CSS, and JavaScript.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

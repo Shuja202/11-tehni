@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "counters": {
+      "title": "Counters",
+      "description": "Global counters collection",
+      "type": "object",
+      "properties": {
+        "gamesPlayed": {
+          "type": "number",
+          "description": "Total number of games played"
+        }
+      },
+      "required": ["gamesPlayed"]
+    },
+    "healthcheck": {
+      "title": "Healthcheck",
+      "description": "Health probe writes and reads",
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "lastPing": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

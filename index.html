@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-WX697H8T08"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-WX697H8T08");
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>11 Tehni</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="title">11 Tehni</h1>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="controls.html" class="nav-link">Controls</a>
+        <a href="rules.html" class="nav-link">Rules</a>
+      </nav>
+    </header>
+
+    <main class="game">
+      <aside class="controls">
+        <button
+          type="button"
+          id="mode-toggle"
+          class="mode-toggle"
+          aria-pressed="false"
+        >
+          <span class="mode-label">2 Players</span>
+        </button>
+        <button type="button" id="reset-btn" class="mode-toggle">
+          New Game
+        </button>
+        <p class="games-played">
+          Games played: <span id="games-count">0</span
+          ><button
+            type="button"
+            class="copy-count-btn"
+            aria-label="Copy games played count"
+            title="Copy"
+          >
+            <img src="copy-icon.webp" alt="" class="copy-icon" />
+          </button>
+        </p>
+      </aside>
+
+      <section class="board-wrap" aria-label="11 Tehni board">
+        <svg
+          id="board"
+          viewBox="0 0 800 560"
+          role="img"
+          aria-labelledby="board-title"
+        >
+          <title id="board-title">11 Tehni game board</title>
+          <g id="board-lines"></g>
+          <g id="board-nodes"></g>
+          <g id="board-pieces"></g>
+        </svg>
+      </section>
+
+      <footer class="status">
+        <p id="status-text">Place your pieces — Player 1's turn</p>
+        <div class="pieces-left" id="pieces-left">
+          <span class="pieces-left-item player1" id="p1-left"><img src="images/chip-p1.svg" alt="" class="badge-chip-icon" /> Player 1: 11 left</span>
+          <span class="pieces-left-item player2" id="p2-left"><img src="images/chip-p2.svg" alt="" class="badge-chip-icon" /> Player 2: 11 left</span>
+        </div>
+        <p id="phase-text" class="phase-text">Placement: 0 / 22</p>
+      </footer>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+  
+</body>
+
+</html>
