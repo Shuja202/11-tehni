@@ -186,11 +186,7 @@ export function statusMessage(state) {
   if (state.awaitingRemoval) {
     return `Player ${state.currentPlayer}: mill! Remove one opponent piece`;
   }
-  if (state.phase === Phase.MOVEMENT) {
-    return `Player ${state.currentPlayer}'s turn — move a piece`;
-  }
-  const vs = state.twoPlayer ? "" : " vs CPU";
-  return `Place your pieces${vs} — Player ${state.currentPlayer}'s turn`;
+  return "";
 }
 
 /** @param {ReturnType<typeof createGameState>} state @param {1 | 2} player */

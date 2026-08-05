@@ -21,42 +21,73 @@ const PORT = Number(process.env.PORT || 3000);
 
 app.use(express.json());
 
-// Load Firebase configuration securely on the server side
+// Load Firebase configuration from env first, then local config file.
 const configPath = path.join(__dirname, 'firebase-applet-config.json');
 let db = null;
 
-if (!fs.existsSync(configPath)) {
-  console.warn('firebase-applet-config.json not found on server; continuing without Firestore.');
-} else {
-  try {
-    const configRaw = fs.readFileSync(configPath, 'utf8').trim();
-    if (!configRaw) {
-      console.warn('firebase-applet-config.json is empty; continuing without Firestore.');
-    } else {
-      const config = JSON.parse(configRaw);
-      const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-      const missingFields = requiredFields.filter((field) => !config[field]);
+const requiredFirebaseFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
 
-      if (missingFields.length > 0) {
-        console.warn(`Firebase config is missing fields: ${missingFields.join(', ')}; continuing without Firestore.`);
-      } else {
-        const firebaseApp = initializeApp({
-          apiKey: config.apiKey,
-          authDomain: config.authDomain,
-          projectId: config.projectId,
-          storageBucket: config.storageBucket,
-          messagingSenderId: config.messagingSenderId,
-          appId: config.appId
-        });
-
-        const dbId = config.firestoreDatabaseId || '(default)';
-        db = getFirestore(firebaseApp, dbId);
-        console.log(`Firebase Firestore initialized on server with database ID: ${dbId}`);
-      }
+const loadFirebaseConfig = () => {
+  if (process.env.FIREBASE_APPLET_CONFIG_JSON) {
+    try {
+      return JSON.parse(process.env.FIREBASE_APPLET_CONFIG_JSON);
+    } catch (err) {
+      console.warn('FIREBASE_APPLET_CONFIG_JSON is not valid JSON; falling back to individual env vars/file.');
     }
-  } catch (err) {
-    console.warn('Firebase initialization skipped:', err.message);
   }
+
+  const envConfig = {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    firestoreDatabaseId: process.env.FIREBASE_FIRESTORE_DATABASE_ID
+  };
+
+  const hasEnvConfig = requiredFirebaseFields.every((field) => Boolean(envConfig[field]));
+  if (hasEnvConfig) {
+    return envConfig;
+  }
+
+  if (!fs.existsSync(configPath)) {
+    console.warn('firebase-applet-config.json not found on server; continuing without Firestore.');
+    return null;
+  }
+
+  const configRaw = fs.readFileSync(configPath, 'utf8').trim();
+  if (!configRaw) {
+    console.warn('firebase-applet-config.json is empty; continuing without Firestore.');
+    return null;
+  }
+
+  return JSON.parse(configRaw);
+};
+
+try {
+  const config = loadFirebaseConfig();
+  if (config) {
+    const missingFields = requiredFirebaseFields.filter((field) => !config[field]);
+    if (missingFields.length > 0) {
+      console.warn(`Firebase config is missing fields: ${missingFields.join(', ')}; continuing without Firestore.`);
+    } else {
+      const firebaseApp = initializeApp({
+        apiKey: config.apiKey,
+        authDomain: config.authDomain,
+        projectId: config.projectId,
+        storageBucket: config.storageBucket,
+        messagingSenderId: config.messagingSenderId,
+        appId: config.appId
+      });
+
+      const dbId = config.firestoreDatabaseId || '(default)';
+      db = getFirestore(firebaseApp, dbId);
+      console.log(`Firebase Firestore initialized on server with database ID: ${dbId}`);
+    }
+  }
+} catch (err) {
+  console.warn('Firebase initialization skipped:', err.message);
 }
 
 const getStatsDocRef = () => (db ? doc(db, 'counters', 'WN3ed25ntpMhS5ow4apl') : null);
@@ -128,7 +159,11 @@ app.get('/api/stats/stream', (req, res) => {
 app.get('/api/healthcheck', async (req, res) => {
   try {
     if (!db) {
-      return res.status(503).json({ status: 'error', message: 'Database uninitialized' });
+      return res.json({
+        status: 'degraded',
+        message: 'Database uninitialized',
+        firebaseConfigured: false
+      });
     }
     const probeDoc = doc(db, 'healthcheck', 'web-connection');
     await setDoc(
@@ -140,7 +175,7 @@ app.get('/api/healthcheck', async (req, res) => {
     if (!snap.exists()) {
       return res.status(500).json({ status: 'error', message: 'Probe document write failed' });
     }
-    res.json({ status: 'ok', data: snap.data() });
+    res.json({ status: 'ok', firebaseConfigured: true, data: snap.data() });
   } catch (err) {
     console.error('Healthcheck error:', err);
     res.status(500).json({ status: 'error', message: err.message });

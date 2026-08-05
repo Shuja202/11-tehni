@@ -60,6 +60,15 @@
       </aside>
 
       <section class="board-wrap" aria-label="11 Tehni board">
+        <div
+          class="chip-stack chip-stack-player1"
+          id="p1-stack"
+          aria-label="Player 1 chips remaining to place"
+        >
+          <div class="chip-stack-pile" id="p1-stack-pile"></div>
+          <span class="chip-stack-count" id="p1-stack-count">11</span>
+        </div>
+
         <svg
           id="board"
           viewBox="0 0 800 560"
@@ -70,15 +79,21 @@
           <g id="board-lines"></g>
           <g id="board-nodes"></g>
           <g id="board-pieces"></g>
+          <g id="board-highlights"></g>
         </svg>
+
+        <div
+          class="chip-stack chip-stack-player2"
+          id="p2-stack"
+          aria-label="Player 2 chips remaining to place"
+        >
+          <div class="chip-stack-pile" id="p2-stack-pile"></div>
+          <span class="chip-stack-count" id="p2-stack-count">11</span>
+        </div>
       </section>
 
       <footer class="status">
-        <p id="status-text">Place your pieces — Player 1's turn</p>
-        <div class="pieces-left" id="pieces-left">
-          <span class="pieces-left-item player1" id="p1-left"><img src="images/chip-p1.svg" alt="" class="badge-chip-icon" /> Player 1: 11 left</span>
-          <span class="pieces-left-item player2" id="p2-left"><img src="images/chip-p2.svg" alt="" class="badge-chip-icon" /> Player 2: 11 left</span>
-        </div>
+        <p id="status-text" class="status-text"></p>
         <p id="phase-text" class="phase-text">Placement: 0 / 22</p>
       </footer>
     </main>

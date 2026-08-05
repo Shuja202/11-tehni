@@ -26,11 +26,15 @@ const adjacency = buildAdjacency(edges);
 const boardLines = document.getElementById("board-lines");
 const boardNodes = document.getElementById("board-nodes");
 const boardPieces = document.getElementById("board-pieces");
+const boardHighlights = document.getElementById("board-highlights");
 const statusText = document.getElementById("status-text");
 const phaseText = document.getElementById("phase-text");
-const piecesLeftEl = document.getElementById("pieces-left");
-const p1LeftEl = document.getElementById("p1-left");
-const p2LeftEl = document.getElementById("p2-left");
+const p1Stack = document.getElementById("p1-stack");
+const p2Stack = document.getElementById("p2-stack");
+const p1StackPile = document.getElementById("p1-stack-pile");
+const p2StackPile = document.getElementById("p2-stack-pile");
+const p1StackCount = document.getElementById("p1-stack-count");
+const p2StackCount = document.getElementById("p2-stack-count");
 const modeToggle = document.getElementById("mode-toggle");
 const modeLabel = modeToggle.querySelector(".mode-label");
 const gamesCountEl = document.getElementById("games-count");
@@ -129,27 +133,59 @@ function renderPieces() {
   );
 }
 
+function renderHighlights() {
+  if (!state.awaitingRemoval) {
+    boardHighlights.replaceChildren();
+    return;
+  }
+
+  boardHighlights.replaceChildren(
+    ...nodes
+      .filter((n) => canRemove(state, n.id, state.currentPlayer))
+      .map((node) => {
+        const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        ring.setAttribute("cx", node.x);
+        ring.setAttribute("cy", node.y);
+        ring.setAttribute("r", 21);
+        ring.classList.add("removable-ring");
+        return ring;
+      })
+  );
+}
+
+function renderChipStack(pileEl, countEl, player, count) {
+  const src = player === 1 ? "images/chip-p1.svg" : "images/chip-p2.svg";
+  pileEl.replaceChildren(
+    ...Array.from({ length: count }, () => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.className = "stack-chip";
+      return img;
+    })
+  );
+  countEl.textContent = String(count);
+}
+
 function updateStatus() {
   statusText.textContent = statusMessage(state);
+  statusText.classList.toggle("status-text--alert", state.awaitingRemoval);
+  statusText.classList.toggle("status-text--win", state.phase === Phase.FINISHED);
   phaseText.textContent = phaseMessage(state);
 
-  piecesLeftEl.hidden = state.phase !== Phase.PLACEMENT;
-  p1LeftEl.innerHTML = `<img src="images/chip-p1.svg" alt="" class="badge-chip-icon" /> Player 1: ${remainingPieces(state, 1)} left`;
-  p2LeftEl.innerHTML = `<img src="images/chip-p2.svg" alt="" class="badge-chip-icon" /> Player 2: ${remainingPieces(state, 2)} left`;
-  p1LeftEl.classList.toggle(
-    "active",
-    state.phase === Phase.PLACEMENT && state.currentPlayer === 1
-  );
-  p2LeftEl.classList.toggle(
-    "active",
-    state.phase === Phase.PLACEMENT && state.currentPlayer === 2
-  );
+  renderChipStack(p1StackPile, p1StackCount, 1, remainingPieces(state, 1));
+  renderChipStack(p2StackPile, p2StackCount, 2, remainingPieces(state, 2));
+
+  const turnActive = state.phase !== Phase.FINISHED;
+  p1Stack.classList.toggle("active", turnActive && state.currentPlayer === 1);
+  p2Stack.classList.toggle("active", turnActive && state.currentPlayer === 2);
 }
 
 function render() {
   renderLines();
   renderNodes();
   renderPieces();
+  renderHighlights();
   updateStatus();
 }
 
