@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node --env-file=.env server.js",
-    "start": "node --env-file=.env server.js",
+    "dev": "node --env-file-if-exists=.env server.js",
+    "start": "node --env-file-if-exists=.env server.js",
     "build": "echo 'No build step required'",
     "lint": "echo 'No lint step required'"
   },
