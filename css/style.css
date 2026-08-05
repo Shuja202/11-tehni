@@ -205,6 +205,14 @@ body {
   animation: pulse 1s ease-in-out infinite;
 }
 
+.selected-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(212, 168, 83, 0.85));
+}
+
 .piece {
   pointer-events: none;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));

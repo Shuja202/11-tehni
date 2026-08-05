@@ -94,6 +94,8 @@ function renderNodes() {
           circle.classList.add("selected");
         } else if (!owner && getValidMoves(state, adjacency, selectedNodeId).includes(node.id)) {
           circle.classList.add("valid");
+        } else if (owner === state.currentPlayer && getValidMoves(state, adjacency, node.id).length > 0) {
+          circle.classList.add("movable");
         }
       }
 
@@ -133,24 +135,32 @@ function renderPieces() {
   );
 }
 
+function makeRing(node, className, radius = 21) {
+  const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  ring.setAttribute("cx", node.x);
+  ring.setAttribute("cy", node.y);
+  ring.setAttribute("r", radius);
+  ring.classList.add(className);
+  return ring;
+}
+
 function renderHighlights() {
-  if (!state.awaitingRemoval) {
-    boardHighlights.replaceChildren();
+  if (state.awaitingRemoval) {
+    boardHighlights.replaceChildren(
+      ...nodes
+        .filter((n) => canRemove(state, n.id, state.currentPlayer))
+        .map((node) => makeRing(node, "removable-ring"))
+    );
     return;
   }
 
-  boardHighlights.replaceChildren(
-    ...nodes
-      .filter((n) => canRemove(state, n.id, state.currentPlayer))
-      .map((node) => {
-        const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        ring.setAttribute("cx", node.x);
-        ring.setAttribute("cy", node.y);
-        ring.setAttribute("r", 21);
-        ring.classList.add("removable-ring");
-        return ring;
-      })
-  );
+  if (state.phase === Phase.MOVEMENT && selectedNodeId !== null) {
+    const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+    boardHighlights.replaceChildren(selectedNode ? makeRing(selectedNode, "selected-ring") : []);
+    return;
+  }
+
+  boardHighlights.replaceChildren();
 }
 
 function renderChipStack(pileEl, countEl, player, count) {
